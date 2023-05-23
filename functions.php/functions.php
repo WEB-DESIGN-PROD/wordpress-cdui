@@ -148,3 +148,63 @@ function purge_cache_callback() {
 
     wp_die();
 }
+
+
+
+
+// DIVERSES FONCTIONS
+
+// pouvoir ajouter nos propres css, du dossier nommé customcss il faut donc créer une fonction
+function ajouter_css_theme_enfant() {
+    // expliquer la fonction...
+    wp_enqueue_style(
+        // préciser le nom du fichier css à lier
+        'main',
+        // préciser le dossier où se trouve notre fichier
+        get_stylesheet_directory_uri() . '/customcss/main.css',
+        [
+            // ici on pourrait venir indiquer des dossiers parents
+        ],
+        // version du fichier
+        '1.0.0'
+    );
+    wp_enqueue_style(
+        'header',
+        get_stylesheet_directory_uri() . '/customcss/header.css',
+        [
+        ],
+        '1.0.0'
+    );
+} 
+// on vient de déclare à wp l'existence du dossier de css et l'existence d'un fichier main.css et header.css venir exécuter la fonction: add_action 1 argument wp_enqueue_scripts 2eme argument le nom de la fonction crée
+// Il a attend en 3ème argument l'ordre de priorité, par défaut 10
+add_action('wp_enqueue_scripts', 'ajouter_css_theme_enfant', 20);
+
+
+
+
+// revoir les widgets sur le thème
+function revoirWidgets() {
+    // register_sidebar attend en paramètre un array, un tableau
+    register_sidebar( array(
+        'name'              => esc_html__('Barre Latérale'),
+        'id'                => 'sidebar-1',
+        'description'       => esc_html__('Ajouter des widgets à ma barre latérale'),
+        'before_widget'     => '<section id="%1$s" class="widget %2$s">',
+        'after_widget'      => '</section>',
+        'before_title'      => '<h2 class="widget-title h5">',
+        'after_title'       => '</h2>',
+    ));
+    // on peut ici dupliquer ce register_sidebar pour ajouter autant de zone de widgets que nécessaire
+    register_sidebar( array(
+        'name'              => esc_html__('Footer 1'),
+        'id'                => 'sidebar-2',
+        'description'       => esc_html__('Ajouter des widgets à mon footer zone 1'),
+        'before_widget'     => '<section id="%1$s" class="widget %2$s">',
+        'after_widget'      => '</section>',
+        'before_title'      => '<h2 class="widget-title h5">',
+        'after_title'       => '</h2>',
+    ));
+ 
+}
+add_action('widgets_init', 'revoirWidgets');
